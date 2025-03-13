@@ -1,6 +1,15 @@
 import numpy as np
 from scipy.spatial.distance import cdist
+'''
+as always, I am using ChatGPT to help me understand the code and complete it. 
 
+some comments that helped me understand the code:
+
+tol defines how close to the exact solution the algorithm needs to get before stopping, so acts as a convergence threshold, 
+allowing early stopping when further iterations bring only marginal improvements. without tol the algorithm would continue 
+until reaching max_iter, even if centroids are already stable. 
+due to float point precision errors direct comparisons between floats can be unreliable
+'''
 
 class KMeans:
     def __init__(self, k: int, tol: float = 1e-6, max_iter: int = 100):
@@ -20,6 +29,32 @@ class KMeans:
             max_iter: int
                 the maximum number of iterations before quitting model fit
         """
+        if not isinstance(k, int) or k <= 0:
+            #checks if k is an instance of the int class
+            raise ValueError("k must be a positive integer.")
+        
+        #int are a subset of floats, meaning an int can be used anywhere a float is expected. 
+        #we would still want an integer value e.g. tol = 1 instead of tol = 1.0 to be accepted as a valid input. 
+        if not isinstance(tol, (float, int)) or tol < 0:
+            #checks value for the variable tol, if it is a float or integer
+            raise ValueError()
+        
+        #max_iter should be an integer, as this is the number of iteration before the algorithm stops. 
+        if not isinstance(max_iter, int) or max_iter <= 0:
+            raise ValueError("max_iter must be a positive integer")
+        
+        #here I initialize the instance attributes of the Kmeans class, making them available for later use
+        #the methods like fit(), predict() etc. access these attributes without needing to pass them as arguments every time.  
+        #if we wouldn't store these attributes in self, we would have to pass them around manually. for example self.centroids()
+        #every time we call predict(), we would have to re-run fit() which is simply inefficient
+        self.k = k 
+        self.tol = tol
+        self.max_iter = max_iter
+        self.centroids = None
+        self.labels = None
+        
+    
+
 
     def fit(self, mat: np.ndarray):
         """
