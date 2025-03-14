@@ -29,4 +29,30 @@ def test_kmeans_fit():
 
 #Test 3: predict method
 def test_kmeans_predict():
-    
+    X_train = np.array([
+        [1,2], [1.5, 1.8], [5, 8],
+        [8, 8], [1, 0.6], [9, 11]
+    ])
+    X_test = np.array([
+        [2, 3], [6, 9]
+    ])
+
+    kmeans = KMeans(k=2)
+    kmeans.fit(X_train)
+    predictions = kmeans.predict(X_test)
+
+    #ensure predictions return a label for each test point
+    assert len(predictions) == len(X_test)
+    assert predictions.ndim == 1 #1D array of labels
+
+def test_kmeans_error():
+    X = np.array([
+        [1,2], [1.5, 1.8], [5, 8],
+        [8, 8], [1, 0.6], [9, 11]
+    ])
+    kmeans = KMeans(k=2)
+    kmeans.fit(X)
+
+    error = kmeans.get_error()
+    assert isinstance(error, float)
+    assert error >= 0 #error should never be negative
