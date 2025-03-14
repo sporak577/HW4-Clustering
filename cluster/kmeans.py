@@ -110,6 +110,7 @@ class KMeans:
 
     #this method does not modify centroids, only classifies new points. 
     #this method classifies new data based on the trained centroids without modifying them. 
+    #this is used for assigning new data points to clusters. 
     def predict(self, mat: np.ndarray) -> np.ndarray:
         """
         Predicts the cluster labels for a provided matrix of data points--
@@ -146,6 +147,15 @@ class KMeans:
             float
                 the squared-mean error of the fit model
         """
+        if self.labels is None:
+            raise ValueError
+        
+        #compute the squared mean error, which calculates how far each data point is from its assigned centroid. 
+        #the smaller the error, the tighter the cluster. 
+        error = np.sum((cdist(self.centroids, self.centroids[self.labels])**2)) / len(self.labels)
+        return error
+
+
 
     def get_centroids(self) -> np.ndarray:
         """
@@ -155,3 +165,6 @@ class KMeans:
             np.ndarray
                 a `k x m` 2D matrix representing the cluster centroids of the fit model
         """
+        if self.centroids is None:
+            raise ValueError("model has not been fitted yet.")
+        return self.centroids
