@@ -87,6 +87,7 @@ class KMeans:
         for _ in range(self.max_iter): #just repeats for the amount of iterables. no need for index.
             #compute distances and assign cluters
             distances = cdist(mat, self.centroids) #takes euclidean distance between each data point and each centroid
+
             #labels is a 1D array where each value is the cluster assignment for a sample, based on np.argim which finds
             #the index of the closest centroid for each data point. 
             labels = np.argmin(distances, axis=1)
@@ -96,9 +97,19 @@ class KMeans:
             #labels == i creates a boolean mask that selects only the points assigned to cluster i. 
             new_centroids = np.array([mat[labels == i].mean(axis=0) for i in range(self.k)])
 
+            #check for convergece, how close new centroid assigned is to the previous one
+            if np.linalg.norm(new_centroids - self.centroids) < self.tol:
+                break #this immediately stops the loop and skips any remaining iterations. 
+            
+            #update self.centroid if needed
+            self.centroids = new_centroids
+        
+        self.labels = labels #store labels for error calculation, as labels link each data point to its assigned cluster
+
        
 
-
+    #this method does not modify centroids, only classifies new points. 
+    #this method classifies new data based on the trained centroids without modifying them. 
     def predict(self, mat: np.ndarray) -> np.ndarray:
         """
         Predicts the cluster labels for a provided matrix of data points--
@@ -115,7 +126,15 @@ class KMeans:
             np.ndarray
                 a 1D array with the cluster label for each of the observations in `mat`
         """
-        
+        if not isinstance(mat, np.ndarray) or mat.ncim != 2:
+            raise ValueError("Input data must be a 2D Numpy array.")
+        if self.centroids is None:
+            raise ValueError("Model has not been fitted yet. call 'fit first.")
+        if mat.shape[1] != self.centroids.shape[1]:
+            raise ValueError("Feature mismatch: input data must have the same number of features as training data. ")
+    
+        distances = cdist(mat, self.centroids)
+        return np.argmin(distances, axis = 1)
 
 
     def get_error(self) -> float:
