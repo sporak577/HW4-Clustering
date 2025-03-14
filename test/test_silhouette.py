@@ -5,6 +5,11 @@ import numpy as np
 from cluster.silhouette import Silhouette
 from sklearn.metrics import silhouette_score #import sklearn for comparison
 
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from cluster.silhouette import Silhouette
+
 #test 1: silhouette initialization
 def test_silhouette_init():
     silhouette = Silhouette()
