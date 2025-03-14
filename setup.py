@@ -6,7 +6,8 @@ setup(
     packages=find_packages(),
     install_requires=[
         "numpy",
-        "scipy"
+        "scipy",
+        "matplotlib",
     ],
     author="Sophie-Christine Porak",
     author_email="sophie.porak@ucsf.edu",
@@ -19,5 +20,5 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.1",
+    python_requires=">=3.",
     )
