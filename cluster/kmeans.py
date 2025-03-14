@@ -71,6 +71,33 @@ class KMeans:
             mat: np.ndarray
                 A 2D matrix where the rows are observations and columns are features
         """
+        #the input data set has to be 2D, because the rows are the samples and the columns are the features we are interested in. 
+        #kmeans needs multiple features to measure distances between points and form clusters. 
+        if not isinstance(mat, np.ndarray) or mat.ndim!= 2:
+            raise ValueError("Input data must be a 2-D numpy array.")
+        
+        n_samples, n_features = mat.shape
+        
+        #randomly initialize centroids from the dataset
+        np.random.seed(42) #for reproducibility
+        #selects k unique random indices from the dataset, replace=False ensures we don't pick the same data point twice. 
+        random_indices = np.random.choice(n_samples, self.k, replace=False)
+        self.centroids = mat[random_indices]
+
+        for _ in range(self.max_iter): #just repeats for the amount of iterables. no need for index.
+            #compute distances and assign cluters
+            distances = cdist(mat, self.centroids) #takes euclidean distance between each data point and each centroid
+            #labels is a 1D array where each value is the cluster assignment for a sample, based on np.argim which finds
+            #the index of the closest centroid for each data point. 
+            labels = np.argmin(distances, axis=1)
+
+            #compute new centroids, as the mean of all assigned points in each cluster. 
+            #labels is a 1D array where each value represents the assigned cluster for each data point. 
+            #labels == i creates a boolean mask that selects only the points assigned to cluster i. 
+            new_centroids = np.array([mat[labels == i].mean(axis=0) for i in range(self.k)])
+
+       
+
 
     def predict(self, mat: np.ndarray) -> np.ndarray:
         """
@@ -88,6 +115,8 @@ class KMeans:
             np.ndarray
                 a 1D array with the cluster label for each of the observations in `mat`
         """
+        
+
 
     def get_error(self) -> float:
         """
